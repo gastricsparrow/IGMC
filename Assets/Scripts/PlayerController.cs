@@ -15,6 +15,9 @@ public class PlayerController : MonoBehaviour {
 	float jumpFactor = 1f;
 	[SerializeField]
 	bool grounded;
+	float phaseCooldown = 0f;
+	bool phaseBool = true;
+	float PHASE_COOLDOWN = 2f;
 
 	float raycastLength = 0.85f;
 
@@ -28,9 +31,29 @@ public class PlayerController : MonoBehaviour {
 		GetInput();
 		CheckGround();
 		Move();
+		Phase();
+
 
 
 	}
+
+	void Phase()
+	{
+		if (Input.GetButtonUp("Phase") && phaseBool)
+		{
+			phaseCooldown = PHASE_COOLDOWN;
+			phaseBool = false;
+		}
+		if (phaseCooldown > 0)
+		{
+			phaseCooldown -= Time.deltaTime;
+		}
+		if (phaseCooldown <= 0)
+		{
+			phaseBool = true;
+		}
+	}
+
 
 	void CheckGround()
 	{
@@ -64,7 +87,7 @@ public class PlayerController : MonoBehaviour {
 
         move.x = moveInput;
 
-        if (Input.GetButtonDown ("Jump") && grounded) {
+        if (Input.GetButton ("Jump") && grounded) {
             velocity.y = jumpPower * jumpFactor;
         } else if (Input.GetButtonUp ("Jump")) 
         {
